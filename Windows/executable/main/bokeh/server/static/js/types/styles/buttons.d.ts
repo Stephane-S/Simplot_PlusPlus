@@ -1,0 +1,10 @@
+export declare const bk_btn = "bk-btn";
+export declare const bk_btn_group = "bk-btn-group";
+export declare const bk_btn_default = "bk-btn-default";
+export declare const bk_btn_primary = "bk-btn-primary";
+export declare const bk_btn_success = "bk-btn-success";
+export declare const bk_btn_warning = "bk-btn-warning";
+export declare const bk_btn_danger = "bk-btn-danger";
+import { ButtonType } from "../core/enums";
+export declare function bk_btn_type(button_type: ButtonType): string;
+export declare const bk_dropdown_toggle = "bk-dropdown-toggle";

@@ -1,0 +1,10 @@
+procedure to modify the group_widget.py file.
+
+This file's layout and .ui comes from "group_list_widget.py", obtainable through "pyuic5 .\group_list_widget.ui -o group_list_widget.py" in the child folder "PyQt5_project"
+
+To modify the layout, follow these steps:
+
+1. replace the layout of the "group_widget.py" from the modified "group_list_widget.py"
+2. make sure "group_list_widget.setObjectName("group_list_widget")" and "# Ui_group_widget.resize(221, 81)" are commented out
+3. replace all "group_list_widget" and "group_widget" variables in layout by "self"
+4. make sure to add the name, color etc. variables in the right widgets 

@@ -1,0 +1,169 @@
+import { Glyph, GlyphView } from "./glyph";
+import * as hittest from "../../core/hittest";
+import * as p from "../../core/properties";
+import { LineVector, FillVector } from "../../core/property_mixins";
+import { NumberArray } from "../../core/types";
+import { inplace } from "../../core/util/projections";
+import { generic_area_legend } from "./utils";
+import { Selection } from "../selections/selection";
+export class HexTileView extends GlyphView {
+    scenterxy(i) {
+        const scx = this.sx[i];
+        const scy = this.sy[i];
+        return [scx, scy];
+    }
+    _set_data() {
+        const n = this._q.length;
+        const { orientation, size, aspect_scale } = this.model;
+        this._x = new NumberArray(n);
+        this._y = new NumberArray(n);
+        const sqrt3 = Math.sqrt(3);
+        if (orientation == "pointytop") {
+            for (let i = 0; i < n; i++) {
+                this._x[i] = size * sqrt3 * (this._q[i] + this._r[i] / 2) / aspect_scale;
+                this._y[i] = -size * 3 / 2 * this._r[i];
+            }
+        }
+        else {
+            for (let i = 0; i < n; i++) {
+                this._x[i] = size * 3 / 2 * this._q[i];
+                this._y[i] = -size * sqrt3 * (this._r[i] + this._q[i] / 2) * aspect_scale;
+            }
+        }
+    }
+    _project_data() {
+        inplace.project_xy(this._x, this._y);
+    }
+    _index_data(index) {
+        let ysize = this.model.size;
+        let xsize = Math.sqrt(3) * ysize / 2;
+        if (this.model.orientation == "flattop") {
+            [xsize, ysize] = [ysize, xsize];
+            ysize *= this.model.aspect_scale;
+        }
+        else
+            xsize /= this.model.aspect_scale;
+        const { data_size } = this;
+        for (let i = 0; i < data_size; i++) {
+            const x = this._x[i];
+            const y = this._y[i];
+            if (isNaN(x + y) || !isFinite(x + y))
+                index.add_empty();
+            else
+                index.add(x - xsize, y - ysize, x + xsize, y + ysize);
+        }
+    }
+    // overriding map_data instead of _map_data because the default automatic mappings
+    // for other glyphs (with cartesian coordinates) is not useful
+    map_data() {
+        [this.sx, this.sy] = this.renderer.coordinates.map_to_screen(this._x, this._y);
+        [this.svx, this.svy] = this._get_unscaled_vertices();
+    }
+    _get_unscaled_vertices() {
+        const size = this.model.size;
+        const aspect_scale = this.model.aspect_scale;
+        if (this.model.orientation == "pointytop") {
+            const rscale = this.renderer.yscale;
+            const hscale = this.renderer.xscale;
+            const r = Math.abs(rscale.compute(0) - rscale.compute(size)); // assumes linear scale
+            const h = Math.sqrt(3) / 2 * Math.abs(hscale.compute(0) - hscale.compute(size)) / aspect_scale; // assumes linear scale
+            const r2 = r / 2.0;
+            const svx = [0, -h, -h, 0, h, h];
+            const svy = [r, r2, -r2, -r, -r2, r2];
+            return [svx, svy];
+        }
+        else {
+            const rscale = this.renderer.xscale;
+            const hscale = this.renderer.yscale;
+            const r = Math.abs(rscale.compute(0) - rscale.compute(size)); // assumes linear scale
+            const h = Math.sqrt(3) / 2 * Math.abs(hscale.compute(0) - hscale.compute(size)) * aspect_scale; // assumes linear scale
+            const r2 = r / 2.0;
+            const svx = [r, r2, -r2, -r, -r2, r2];
+            const svy = [0, -h, -h, 0, h, h];
+            return [svx, svy];
+        }
+    }
+    _render(ctx, indices, { sx, sy, svx, svy, _scale }) {
+        for (const i of indices) {
+            if (isNaN(sx[i] + sy[i] + _scale[i]))
+                continue;
+            ctx.translate(sx[i], sy[i]);
+            ctx.beginPath();
+            for (let j = 0; j < 6; j++) {
+                ctx.lineTo(svx[j] * _scale[i], svy[j] * _scale[i]);
+            }
+            ctx.closePath();
+            ctx.translate(-sx[i], -sy[i]);
+            if (this.visuals.fill.doit) {
+                this.visuals.fill.set_vectorize(ctx, i);
+                ctx.fill();
+            }
+            if (this.visuals.line.doit) {
+                this.visuals.line.set_vectorize(ctx, i);
+                ctx.stroke();
+            }
+        }
+    }
+    _hit_point(geometry) {
+        const { sx, sy } = geometry;
+        const x = this.renderer.xscale.invert(sx);
+        const y = this.renderer.yscale.invert(sy);
+        const candidates = this.index.indices({ x0: x, y0: y, x1: x, y1: y });
+        const indices = [];
+        for (const i of candidates) {
+            if (hittest.point_in_poly(sx - this.sx[i], sy - this.sy[i], this.svx, this.svy)) {
+                indices.push(i);
+            }
+        }
+        return new Selection({ indices });
+    }
+    _hit_span(geometry) {
+        const { sx, sy } = geometry;
+        let indices;
+        if (geometry.direction == 'v') {
+            const y = this.renderer.yscale.invert(sy);
+            const hr = this.renderer.plot_view.frame.bbox.h_range;
+            const [x0, x1] = this.renderer.xscale.r_invert(hr.start, hr.end);
+            indices = [...this.index.indices({ x0, y0: y, x1, y1: y })];
+        }
+        else {
+            const x = this.renderer.xscale.invert(sx);
+            const vr = this.renderer.plot_view.frame.bbox.v_range;
+            const [y0, y1] = this.renderer.yscale.r_invert(vr.start, vr.end);
+            indices = [...this.index.indices({ x0: x, y0, x1: x, y1 })];
+        }
+        return new Selection({ indices });
+    }
+    _hit_rect(geometry) {
+        const { sx0, sx1, sy0, sy1 } = geometry;
+        const [x0, x1] = this.renderer.xscale.r_invert(sx0, sx1);
+        const [y0, y1] = this.renderer.yscale.r_invert(sy0, sy1);
+        const indices = [...this.index.indices({ x0, x1, y0, y1 })];
+        return new Selection({ indices });
+    }
+    draw_legend_for_index(ctx, bbox, index) {
+        generic_area_legend(this.visuals, ctx, bbox, index);
+    }
+}
+HexTileView.__name__ = "HexTileView";
+export class HexTile extends Glyph {
+    constructor(attrs) {
+        super(attrs);
+    }
+    static init_HexTile() {
+        this.prototype.default_view = HexTileView;
+        this.mixins([LineVector, FillVector]);
+        this.define({
+            r: [p.NumberSpec],
+            q: [p.NumberSpec],
+            size: [p.Number, 1.0],
+            aspect_scale: [p.Number, 1.0],
+            scale: [p.NumberSpec, 1.0],
+            orientation: [p.HexTileOrientation, "pointytop"],
+        });
+        this.override({ line_color: null });
+    }
+}
+HexTile.__name__ = "HexTile";
+HexTile.init_HexTile();
+//# sourceMappingURL=hex_tile.js.map
