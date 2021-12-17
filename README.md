@@ -1,4 +1,4 @@
-﻿﻿﻿﻿﻿﻿<h1  align="center">SimPlot++</h1>
+﻿﻿﻿﻿﻿﻿﻿<h1  align="center">SimPlot++</h1>
 <h2  align="center">Recombination detection software</h2>
 
 <details open>
@@ -46,15 +46,49 @@ SimPlot++ offers the following features:
 # Installation
 ### Windows
 
-SimPlot++ can be used either through the provided executable or as a script by downloading the dependencies and running the main.py file.
+SimPlot++ can be used either through the provided executable or as a script by downloading the dependencies indicated in the requirement.txt file and running the main.py file.
 
 ### Linux/UNIX
+
+A Linux/UNIX script is provided. A few steps are required for enabling the BootScan analysis (Every other features only require the first step). 
+
+1. Make sure all dependencies indicated in the requirement.txt file are installed in your python environment.
+2. Go to the `Linux-UNIX/lib/Bootscan/phylip_exe` directory
+3. Extract the zipped `phylip-3.697_simplot.tar.xz` folder
+4. Move to the `phylip-3.697_simplot/src` directory
+5. Execute `make -f Makefile.unx install`
+6. A new `exe` directory should have been generated, containing 4 executables named consense, dnadist, neighbor and seqboot
+7. Move these new executables to the `Linux-UNIX/lib/Bootscan/phylip_exe/linux` directory
+8. Done
 
 
 
 ### Mac
 
+A MacOS script is provided. A few steps are required for enabling the BootScan analysis (Every other features only require the first step). 
 
+1. Make sure all dependencies indicated in the requirement.txt file are installed in your python environment.
+2. Go to the `Mac/lib/Bootscan/phylip_exe` directory
+3. Extract the zipped `phylip-3.697_simplot.tar.xz` folder
+4. Move to the `phylip-3.697_simplot/src` directory
+5. Execute `make -f Makefile.unx install`
+6. A new `exe` directory should have been generated, containing 4 executables named consense, dnadist, neighbor and seqboot
+7. Move these new executables to the `Mac/lib/Bootscan/phylip_exe/linux` directory
+8. Done
+
+
+
+If any issue arise with the PHYLIP package installation, please go to the [official installation guide](https://evolution.gs.washington.edu/phylip/install.html) and follow the appropriate steps for your operating system. 
+
+#### Generating an executable manually
+
+An executable can also be built quickly through the pyinstaller python library. 
+
+1. Create a virtual environement containing only the dependencies shown in the requirement.txt file and pyinstalller itself.
+2. Execute the following command from the directory containing the main.py file: `pyinstaller --noconfirm --onedir -i SimPlot.ico --console main.py`
+3. The executable can be found in the `dist/main` directory generated. 
+4. Copy to that directory the `lib` and `stored` folders from the main.py directory
+5. The executable should now function adequately.
 
 # Usage
 
