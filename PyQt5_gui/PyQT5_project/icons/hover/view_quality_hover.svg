@@ -1,0 +1,20 @@
+<svg width="800" height="276" xmlns="http://www.w3.org/2000/svg">
+
+ <g>
+  <title>Layer 1</title>
+  <g id="surface1">
+   <path id="svg_1" fill-rule="nonzero" fill="#8F1114" d="m276,138c0,76.21484 -61.78516,138 -138,138c-76.21484,0 -138,-61.78516 -138,-138c0,-76.21484 61.78516,-138 138,-138c76.21484,0 138,61.78516 138,138zm0,0"/>
+   <path id="svg_2" fill-rule="nonzero" fill="#CFCFCF" d="m115.78906,90.52344l-15.5664,15.5664l-8.01563,-8.01171l-8.0039,8.0039l16.01953,16.01953l23.57422,-23.57422l-8.00782,-8.0039zm0,0"/>
+   <path id="svg_3" fill-rule="nonzero" fill="#CFCFCF" d="m134.89844,87.32031l56.67187,0l0,11.32032l-56.67187,0l0,-11.32032zm0,0"/>
+   <path id="svg_4" fill-rule="nonzero" fill="#CFCFCF" d="m134.89844,109.98047l56.67187,0l0,11.32031l-56.67187,0l0,-11.32031zm0,0"/>
+   <path id="svg_5" fill-rule="nonzero" fill="#CFCFCF" d="m115.78906,135.84375l-15.5664,15.56641l-8.01563,-8.01563l-8.0039,8.00781l16.01953,16.01954l23.57422,-23.57422l-8.00782,-8.00391zm0,0"/>
+   <path id="svg_6" fill-rule="nonzero" fill="#CFCFCF" d="m134.89844,132.63672l56.67187,0l0,11.32422l-56.67187,0l0,-11.32422zm0,0"/>
+   <path id="svg_7" fill-rule="nonzero" fill="#CFCFCF" d="m134.89844,155.30078l56.67187,0l0,11.32031l-56.67187,0l0,-11.32031zm0,0"/>
+   <path id="svg_8" fill-rule="nonzero" fill="#CFCFCF" d="m115.78906,181.16406l-15.5664,15.56641l-8.01563,-8.01563l-8.0039,8.00391l16.01953,16.01953l23.57422,-23.57031l-8.00782,-8.00391zm0,0"/>
+   <path id="svg_9" fill-rule="nonzero" fill="#CFCFCF" d="m134.89844,177.96094l56.67187,0l0,11.32031l-56.67187,0l0,-11.32031zm0,0"/>
+   <path id="svg_10" fill-rule="nonzero" fill="#CFCFCF" d="m134.89844,200.62109l56.67187,0l0,11.32032l-56.67187,0l0,-11.32032zm0,0"/>
+   <path id="svg_11" fill-rule="nonzero" fill="#CFCFCF" d="m180.23828,53.03125l0,-11.63281l-84.47656,0l0,11.63281l-33.98828,0l0,181.57031l152.45312,0l0,-181.57031l-33.98828,0zm-73.15625,-0.30859l61.83594,0l0,11.9375l-61.83594,0l0,-11.9375zm95.82422,170.55859l-129.8125,0l0,-158.92969l22.66797,0l0,11.62891l84.47656,0l0,-11.62891l22.66797,0l0,158.92969zm0,0"/>
+  </g>
+  <text xml:space="preserve" text-anchor="start" font-family="sans-serif" font-size="80" id="svg_4" y="167.45313" x="279.5" stroke-opacity="null" stroke-width="0" stroke="null" fill="#8F1114">  View Quality</text>
+ </g>
+</svg>

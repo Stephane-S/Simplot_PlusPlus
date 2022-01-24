@@ -1,0 +1,12 @@
+<svg width="800" height="200" xmlns="http://www.w3.org/2000/svg">
+ <!-- Created with Method Draw - http://github.com/duopixel/Method-Draw/ -->
+ <g>
+  <title>background</title>
+  <rect fill="none" id="canvas_background" height="202" width="702" y="-1" x="-1"/>
+ </g>
+ <g>
+  <title>Layer 1</title>
+  <text style="cursor: move;" xml:space="preserve" text-anchor="start" font-family="sans-serif" font-size="175" id="svg_2" y="160.5" x="5.22656" stroke-opacity="null" stroke-width="0" stroke="null" fill="#404040">SimPlot</text>
+  <text style="cursor: move;" xml:space="preserve" text-anchor="start" font-family="sans-serif" font-size="100" id="svg_3" y="91" x="600" stroke-opacity="null" stroke-width="0" stroke="null" fill="#8F1114">++</text> 
+  </g>
+</svg>

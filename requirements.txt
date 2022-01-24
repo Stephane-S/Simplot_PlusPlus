@@ -1,0 +1,12 @@
+biopython==1.78
+bokeh==2.2.3
+cogent3==2020.12.21a0
+colorcet==2.0.2
+matplotlib==3.3.1
+networkx==2.5
+numba==0.53.0
+numpy==1.19.1
+pandas==1.1.2
+psutil==5.8.0
+PyQt5==5.15.6
+tabulate==0.8.9
