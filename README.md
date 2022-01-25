@@ -1,4 +1,4 @@
-﻿﻿﻿﻿﻿﻿﻿<h1  align="center">SimPlot++</h1>
+﻿﻿﻿﻿﻿﻿﻿﻿<h1  align="center">SimPlot++</h1>
 <h2  align="center">Recombination detection software</h2>
 
 <details open>
@@ -10,175 +10,202 @@
     <li>
       <a href="#Installation">Installation</a>
       <ul>
-        <li><a href="#Windows">Windows</a></li>
-        <li><a href="#Linux/UNIX">Linux/UNIX</a></li>
-          <li><a href="#Mac">Mac</a></li>
+        <li><a href="#Windows version">Windows version</a></li>
+        <li><a href="#Linux/UNIX and Mac OS versions">Linux/UNIX and Mac OS versions</a></li>
       </ul>
     </li>
-    <li><a href="#usage">Usage</a></li>
+    <li> Available analyses</li>
       <ul>
         <li><a href="#Group Page">Group Page</a></li>
-        <li><a href="#SimPlot">SimPlot</a></li>
-        <li><a href="#BootScan">BootScan</a></li>
-        <li><a href="#FindSite">FindSite</a></li>
-        <li><a href="#Similarity Network">Similarity Network</a></li>
-        <li><a href="#Statistical methods">Statistical methods</a></li>
+        <li><a href="#SimPlot analysis">SimPlot analysis</a></li>
+        <li><a href="#Similarity network">Similarity network</a></li>
+        <li><a href="#Bootscan analysis">Bootscan analysis</a></li>
+        <li><a href="#Findsite">Findsite</a></li>
+        <li><a href="#Detection of recombination">Detection of recombination</a></li>
       </ul>
-    <li><a href="#License">License</a></li>
   </ol>
 </details>
 
 
+
 # About The Project
 
-Simplot++ is a multi-platform software designed by Stéphane Samson, Étienne Lord and Vladimir Makarenkov (Université du Québec à Montréal) as a tool for the detection of recombination events for both nucleotide and protein multiple sequence alignments. Compared to previous software such as SimPlot, RDP4 and RAT, SimPlot++ aims to improve the transparency of analysis, plot qualities and ease of customization.
+Simplot++ is an open-source multi-platform application designed by Stéphane Samson, Étienne Lord and Vladimir Makarenkov (Université du Québec à Montréal). It is implemented in Python. SimPlot++ produces publication-ready SimPlot and BootScan plots using 43 nucleotide and 20 amino acid distance models. Intergenic and intragenic recombination events can be identified using Phi, χ2, NSS and Proportion tests, while diagnostic of recombination events can be visualized using interactive sequence similarity networks. SimPlot++ supports multicore processing and provides additional distance calculability diagnostics.
 
 SimPlot++ offers the following features:
-<ul>  
-<li>Create and save consensus group</li>  
-<li>Execute a SimPlot analysis</li>  
-<li>Execute a BootScan analysis</li>  
-<li>Identify informative sites</li>  
-<li>Create a similarity network</li>
-<li>Run Phi, NSS and Max-Chi statistical tests</li>    
-</ul>
 
-# Installation
-### Windows
+- Create and save consensus groups 
+- Execute a SimPlot (sequence similarity plot) analysis
+- Execute a BootScan analysis  
+- Identify informative sites  
+- Create and analyze sequence similarity networks
+- Run Phi, NSS and χ2 statistical tests to detect recombination
 
-SimPlot++ can be used either through the provided executable or as a script by downloading the dependencies indicated in the requirement.txt file and running the main.py file.
-
-### Linux/UNIX
-
-A Linux/UNIX script is provided. A few steps are required for enabling the BootScan analysis (Every other features only require the first step). 
-
-1. Make sure all dependencies indicated in the requirement.txt file are installed in your python environment.
-2. Go to the `Linux-UNIX/lib/Bootscan/phylip_exe` directory
-3. Extract the zipped `phylip-3.697_simplot.tar.xz` folder
-4. Move to the `phylip-3.697_simplot/src` directory
-5. Execute `make -f Makefile.unx install`
-6. A new `exe` directory should have been generated, containing 4 executables named consense, dnadist, neighbor and seqboot
-7. Move these new executables to the `Linux-UNIX/lib/Bootscan/phylip_exe/linux` directory
-8. Done
 
 
 
-### Mac
+# Installation
+## Windows version
 
-A MacOS script is provided. A few steps are required for enabling the BootScan analysis (Every other features only require the first step). 
+SimPlot++ for Windows is available either as an executable file or as a Python script.
 
-1. Make sure all dependencies indicated in the requirement.txt file are installed in your python environment.
-2. Go to the `Mac/lib/Bootscan/phylip_exe` directory
-3. Extract the zipped `phylip-3.697_simplot.tar.xz` folder
-4. Move to the `phylip-3.697_simplot/src` directory
-5. Execute `make -f Makefile.unx install`
-6. A new `exe` directory should have been generated, containing 4 executables named consense, dnadist, neighbor and seqboot
-7. Move these new executables to the `Mac/lib/Bootscan/phylip_exe/linux` directory
-8. Done
+### Executable
+The Windows installer can be found in the [release](https://github.com/Stephane-S/Simplot_PlusPlus/releases). Click on the most recent `SimPlot++-x.x-win64.msi` file to download it.
 
+### Python script
+A `requirements.txt` file containing all required libraries is available in the GitHub repository.
 
+Assuming Python 3.8 or higher is installed on the machine, the script should run well with the libraries installed.
 
-If any issue arise with the PHYLIP package installation, please go to the [official installation guide](https://evolution.gs.washington.edu/phylip/install.html) and follow the appropriate steps for your operating system. 
+<u>Here is an example of how to run the script in Windows:</u>
+1. After downloading the source code, go to the folder containing `main.py`.
+1. Create a new virtual environment (venv) in your Windows PowerShell using `python3 -m venv SimPlot++_venv `.
+2. Still in the PowerShell, enter the new venv using `SimPlot++_env/Scripts/Activate.ps1`.
+3. Install the required libraries using `pip install -r requirements.txt`.
+4. Launch SimPlot++ using `python3 main.py`.
 
-#### Generating an executable manually
+## Linux/UNIX and Mac OS versions
+SimPlot++ is available as a Python script.
 
-An executable can also be built quickly through the pyinstaller python library. 
+### Python script
+A `requirements.txt` file containing all required libraries is available in the GitHub repository.
 
-1. Create a virtual environement containing only the dependencies shown in the requirement.txt file and pyinstalller itself.
-2. Execute the following command from the directory containing the main.py file: `pyinstaller --noconfirm --onedir -i SimPlot.ico --console main.py`
-3. The executable can be found in the `dist/main` directory generated. 
-4. Copy to that directory the `lib` and `stored` folders from the main.py directory
-5. The executable should now function adequately.
+Assuming Python 3.8 or higher is installed on the machine, the script should run well with the libraries installed.
 
-# Usage
-
-SimPlot, an interactive 32-bit software program for Microsoft Windows computers, was created to plot similarity versus position ([41](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC103818/#B41)) and is similar in purpose to the Recombination Inference Program (RIP) for UNIX computers ([52](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC103818/#B52))
-
-### Group Page
-The group page allow users to load multiple sequences files (fasta, nexus, pir, phylip, stockholm or clustal format) and manually organize the individual sequences in groups. For each of the groups created by the user, a consensus sequence will be produced. The % threshold for this consensus can be modified in the preference tab. 
-These consensus groups are essential for the SimPlot, BootScan and Similarity Network analysis. The groups can be saved to a nexus file to avoid recreating them every time. 
-
-### SimPlot
-
-This method consists of using a sliding window across each consensus sequences in order to extract subsequences. These subsequences are then used to generate distance matrices and plot the similarity between every group and a chosen reference group for each window. Variations in similarity between a reference and the other sequences can help detect potential recombination events.
+<u>Here is an example of how to run the script in Windows:</u>
+1. After downloading the source code, go to the folder containing `main.py`.
+2. If you do not have `virtualenv` installed, run `python3 -m pip install --user virtualenv`
+3. Create a new virtual environment (venv) in your terminal using `python3 -m venv SimPlot++_env`.
+4. Still in the terminal, enter the new venv using `source SimPlot++_env/bin/activate`.
+5. Install the required libraries using `python3 -m pip install -r requirements.txt`.
+6. Launch SimPlot++ using `python3 main.py`.
 
 
 
-A new feature of SimPlot++ is the quality control feature for the Simplot analysis where the user can view gap-related informations (such as the regions where the amount of gaps in the consensus sequence was higher than the gap threshold). 
+# getting started
 
-Overall data completeness (whether genetic distances were successfully computed or not in each window) can also be viewed through this feature.
+## Group page
+The group page allows users to load multiple sequences files (fasta, nexus, pir, phylip, stockholm or clustal format) and manually organize the individual sequences in groups. For each of the groups created by the user, a consensus sequence will be generated by SimPlot++. The % threshold for these consensus sequences can be modified in the preference tab. 
+These consensus groups are essential for the SimPlot, BootScan and Similarity Network analysis. The groups can be saved to a nexus file to avoid recreating them every time.
 
-Since certain models can throw errors when computing genetically distant sequences (divisions by zero, log of negative numbers, etc.), it is recommended to use this feature to check if such issues happened. If it did, either modify the analysis parameters, consensus groups, consensus threshold, or distance model used depending on the analysis needs. As a general rule, simpler models are more lenient. 
+### A typical workflow would look like this:
 
-##### Settings:
+![group_page_step](https://github.com/Stephane-S/Simplot_PlusPlus/blob/master/Docs/images/group_page_steps.png)
 
-**Distance models**:
+1. Select your sequence file (DNA or AA) in an accepted format (Fasta, Nexus, Pir, Phylip, Stockholm or Clustal) through the **File browser** button
+2. Once the file is loaded, the sequences ID will appear in the **Ungrouped Sequences** section, in the bottom right.
+3. Groups can be created and deleted, and sequences ID can be moved from the **Ungrouped Sequences** section to the **Group section**
+    - Groups can be renamed by clicking on it's given name.
+    - Groups colors can be modified by clicking on it's colored circle.
+    - A group that has no sequences will block the user from accessing most analyses available.
+    - A minimum of two groups containing at least 1 sequence each are necessary to access every feature.
+4. Once your groups are created, customized and are ready to use, it is suggested to save them locally using the **Save groups to .Nexus** button.
+    - This feature will save your initial data in the nexus format along with the groups compositions, allowing you to skip the group creation process the next time you start SimPlot++
+5. Once these steps are completed, you can execute your analysis of choice by selection it on the top bar.
 
-| DNA   models |            | Protein   models |            |
-| :----------: | :--------: | :--------------: | :--------: |
-|   Hamming    |    F84     |     Hamming      |   logdet   |
-|     JC69     |    TN93    |       JC69       | paralinear |
-|    Kimura    |   HKY85    |      Kimura      |  percent   |
-|    Tamura    |    GTR     |      DSO78       |            |
-|  TajimaNei   |    ssGN    |       AH96       |            |
-| JinNeiGamma  | paralinear |  AH96 mtmammals  |            |
-|    LogDet    |  percent   |      JTT92       |            |
-|     F81      |            |       WAG        |            |
+Below is a summary of the steps presented:
 
+![group page gif](https://github.com/Stephane-S/Simplot_PlusPlus/blob/master/Docs/images/group_page_steps_gif.gif)
+
+
+
+# SimPlot analysis
+
+## Methodology
+A SimPlot analysis employs a window of a specified size and step to slide over the Multiple Sequences Alignment (MSA). Every subsequence covered by the window is extracted and a distance matrix based on a specified model is generated. These distance matrices are then used to plot the similarity of every sequence in the MSA against a specific sequence chosen by the user. The variations in similarity between the reference and the other sequences can help detect potential recombination events.
+
+### Main features
+- 43 DNA distance and 20 amino acids models models are available (includes models from [Biopython](https://biopython.org/) and [Cogent3](https://cogent3.org/)).
+- A multiprocessing feature
+- Matplotlib-based plots with a toolbar to easily customize and save the outputs in multiple formats.
+- Plots can be viewed in a pop-up window (with the toolbar)
+- A new quality control window will open an interactive HTML page to access additional information on the output quality.
+
+### Settings
 **Window length**: Determines the size of the sliding window 
 
-**Step**: Determines how much the window will slide very iteration (with overlap)
+**Step**: Determines how much the window will slide every iteration (with overlap)
 
 **Strip gap**: Determines the maximum amount of ambiguous positions allowed in a consensus sequence to be included (optional)
 
 **Multiprocessing**: Allows multiple windows to be analyzed simultaneously. Recommended for big data sets.
 
+**Distance Model**: 43 DNA models and 20 protein models available
+
+### Simplot analysis example
+
+![Simplot analysis](https://github.com/Stephane-S/Simplot_PlusPlus/blob/master/Docs/images/simplot_gif.gif)
+
+## Quality control tool
+A new feature of SimPlot++ is the quality control feature for the Simplot analysis where the user can view gap-related data (such as the regions where the amount of gaps in the consensus sequence was higher than the gap threshold permitted). 
+
+Overall data completeness (whether genetic distances were successfully computed or not in each window) can also be viewed through this feature.
+
+Since certain models can throw errors when computing genetically distant sequences (divisions by zero, log of negative numbers, etc.), it is recommended to use this feature to check if such issues happened. If it did, it is recommended to modify the analysis parameters, consensus groups, consensus threshold, or the distance model used depending on the analysis. As a general rule, simpler models tend to be more lenient. 
 
 
-### BootScan
 
-This analysis consists of employing the PHYLIP suite of software and a sliding window similar to the SimPlot method in order to identify the recombinations. For every subsequence extracted with the sliding window,  
-
-For each window during the analysis, the sub-sequences extracted are first resampled by bootstrapping. The multiplied dataset is then used to generate
-distance matrices according to a model specified by the user (JC69, Kimura, F84 or Logdet). These distance matrices are then used to produce phylogenetic trees (Neighbor-Joining or UPGMA).
-
-The topologies of each tree from the multiplied dataset are then analyzed in order to determine for each window which consensus sequence is most similar to the reference sequence.
-
-The resulting graph represents the percentage of trees where each sequence was most similar to the reference sequence, for each window.
-
-
-
-##### Settings:
-
-**Bootstrap**: Amounts of replications to generate for each dataset (window) 
-
-**Tree model**: Neighbor-Joining or UPGMA
-
-**Window length**: Determines the size of the sliding window 
-
-**Step**: Determines how much the window will slide very iteration (with overlap)
-
-**Distance Model**: JC69, Kimura, F84 or Logdet
-
-**t/t ratio**  expected ratio of transitions to transversions
-
-### FindSite
-
-The FindSite scan is used for locating possible regions of recombination by identifying informative sites. The first step of the analysis is to select a sequence suspected of having originated of a recombination event as well as two sequences of interest (one from each of the two suspected parental evolutionary lines) and a fourth from an evolutionarily unrelated sequence to the previous three (an outgroup). Informative sites will be identified as those where, at the same position, two of the sequences share the same nucleotide, and that the other two sequences share another different nucleotide.
-
-### Similarity Network
+# Similarity network
 
 The similarity network analysis is an interactive representation of a SimPlot analysis where every group (without a chosen reference group) is represented by a node. These nodes are connected by their global (overall sequence) and local (per window) similarities. 
 
 By adjusting the minimum similarity threshold required to show each of these edge types, it is possible to get a better overview look of the relationships between every group. Furthermore, the graph representation can be limited to a specific range of the full sequences, in order to isolate a gene or region of interest. 
 
-Datatables allows the user to view the raw data represented visually in the graph. Results of the Proportion test are also available in a Datatable (discussed in more details in the statistical methods section below).
+Datatables allows the user to view the raw data represented visually in the graph. The results of the Proportion test are also available in a datatable (discussed in more details in the statistical methods section.
 
-The graph data and visualisation are stored in an HTML file that can be downloaded and shared while retaining the interactive features.
+The graph data and visualization are stored in an HTML file that can be downloaded and shared while retaining their interactive features.
 
-By default the HTML file will open in the default browser. For technical reasons, the HTML can only be shown directly in the GUI through the script version (not the executable) by manually switching the `self.show_network_in_gui` variable in main.py to True. 
+### Similarity network output example
 
-### Statistical methods
+![similarity network](https://github.com/Stephane-S/Simplot_PlusPlus/blob/master/Docs/images/newtwork_gif.gif)
+
+
+
+# Bootscan analysis
+
+## Methodology
+Bootscanning is a pipeline consisting of 4 main steps, all done using a sliding window (just like the SimPlot analysis).
+### Steps
+1. The subsequences extracted from the consensus groups are bootstrapped N times.
+2. For each of the N bootstrapped Multiple Sequences Alignments (MSA), a distance matrix is generated.
+3. A phylogenetic tree is inferred for each distance matrix (either with Neighbor-Joining or UPGMA).
+4. The conflicting phylogenetic signals are quantified and expressed as the % of trees where each sequence is the nearest neighbor of the reference sequence. 
+
+### Main features
+- 43 DNA models are available for generating the distance matrices
+- A multiprocessing feature
+- Matplotlib-based plots with a toolbar to easily customize and save the outputs in multiple formats
+- Plots can be viewed in a pop-up window (with the toolbar)
+
+### Settings
+**Bootstrap**: Number of replicates to be generated for each dataset (window)
+
+**Tree model**: Neighbor-Joining or UPGMA
+
+**Window length**: Size of the sliding window 
+
+**Step**: Sliding window advancement step
+
+**Distance Model**: 43 DNA substitution models are available
+
+**Multiprocessing**: Allows multiple windows to be analyzed simultaneously (recommended for large datasets).
+
+### Bootscan analysis example
+
+![Bootscan gif](https://github.com/Stephane-S/Simplot_PlusPlus/blob/master/Docs/images/bootscan_gif.gif)
+
+
+
+# Findsite
+
+The FindSite scan is used for locating possible regions of recombination by identifying informative sites. The first step of the analysis is to select a sequence suspected of having originated of a recombination event as well as two sequences of interest (one from each of the two suspected parental evolutionary lines) and a fourth from an evolutionarily unrelated sequence to the previous three (an outgroup). Informative sites will be identified as those where, at the same position, two of the sequences share the same nucleotide, and that the other two sequences share another different nucleotide.
+
+### FindSite example
+![Findsite](https://github.com/Stephane-S/Simplot_PlusPlus/blob/master/Docs/images/findsite.gif)
+
+
+
+# Detection of recombination
 
 Statistical tests for the detection of recombination events from the PhiPack package by Trevor Bruen have been implemented in SimPlot++. This implementation includes a graphical interface in order to simplify it's usage. The multiprocessing option is recommended for faster results. 
 
@@ -190,15 +217,8 @@ Additional information on these tests can be found [here](https://www.researchga
 
 Additionally, a new proportion test has been designed as a complement to the traditional SimPlot analysis in order to identify the most likely mosaic regions in the grouped sequences. It is an indirect test based on the proportion of genetic distances extracted from the SimPlot distance matrices. The score is an indicator of the signal strength but should not be taken as a recombination signal. It's purpose is to help guide the user and highlight the most promising leads.
 
-
-
-## License
-
-
-
-
-
-
+### Example Output
+![recombination](https://github.com/Stephane-S/Simplot_PlusPlus/blob/master/Docs/images/recomb_gif.gif)
 
 
 
