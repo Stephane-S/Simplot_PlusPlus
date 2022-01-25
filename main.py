@@ -1244,7 +1244,8 @@ class MainWindow:
 
             df['status'] = np.where(
                 df['similarity'] >= 0, "distance calculated", np.where(
-                    df['similarity'] == np.nan, "Not calculated", "Not calculated"))
+                    df['similarity'] == np.nan, "Not calculated",
+                    np.where(df['similarity'] < 0, "Negative output", "Not calculated")))
 
         df = df.reset_index(drop= True)
 

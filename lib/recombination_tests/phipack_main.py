@@ -15,6 +15,7 @@ class PhiAnalyser(QObject):
         sum_phi, sum_sq_phi, obs_mean, obs_variance = 0, 0, 0, 0
         mean, variance, normal_p_value = 0, 0, 0
         emp_phi = 0
+        ntrials= 0
         if self.Q_output:
             self.text_output.emit(f"Reading sequence file {str(datafile)}")
         taxa_list, alignment, num_sites, num_taxa = extract_fasta(datafile, datatype)
