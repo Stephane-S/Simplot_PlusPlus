@@ -48,7 +48,7 @@ SimPlot++ offers the following features:
 # Installation
 ## Windows version
 
-SimPlot++ for Windows is available either as an [executable file] (https://github.com/Stephane-S/Simplot_PlusPlus/releases) or as a Python script.
+SimPlot++ for Windows is available either as an [executable file](https://github.com/Stephane-S/Simplot_PlusPlus/releases) or as a Python script.
 
 ### Executable
 The Windows installer can be found at the [release](https://github.com/Stephane-S/Simplot_PlusPlus/releases). Click on the `SimPlot++-x.x-win64.msi` file to download it.
