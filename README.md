@@ -11,7 +11,7 @@
       <a href="#Installation">Installation</a>
       <ul>
         <li><a href="#Windows-version">Windows version</a></li>
-        <li><a href="#Linux/UNIX-and-Mac-OS-versions">Linux/UNIX and Mac OS versions</a></li>
+        <li><a href="#Linux-UNIX-and-Mac-OS-versions">Linux/UNIX and Mac OS versions</a></li>
       </ul>
     </li>
     <li> Available analyses</li>
@@ -65,7 +65,7 @@ Assuming Python 3.8 or higher is installed on the machine, the script should run
 3. Install the required libraries using `pip install -r requirements.txt`.
 4. Launch SimPlot++ using `python3 main.py`.
 
-## Linux/UNIX and Mac OS versions
+## Linux UNIX and Mac OS versions
 SimPlot++ is available as a Python script.
 
 ### Python script
