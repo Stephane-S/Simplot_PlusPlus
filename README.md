@@ -10,18 +10,18 @@
     <li>
       <a href="#Installation">Installation</a>
       <ul>
-        <li><a href="#Windows version">Windows version</a></li>
-        <li><a href="#Linux/UNIX and Mac OS versions">Linux/UNIX and Mac OS versions</a></li>
+        <li><a href="#Windows-version">Windows version</a></li>
+        <li><a href="#Linux/UNIX-and-Mac-OS-versions">Linux/UNIX and Mac OS versions</a></li>
       </ul>
     </li>
     <li> Available analyses</li>
       <ul>
-        <li><a href="#Group creation">Group creation</a></li>
-        <li><a href="#SimPlot analysis">SimPlot analysis</a></li>
-        <li><a href="#Similarity networks">Similarity networks</a></li>
-        <li><a href="#Bootscan analysis">Bootscan analysis</a></li>
+        <li><a href="#Group-creation">Group creation</a></li>
+        <li><a href="#SimPlot-analysis">SimPlot analysis</a></li>
+        <li><a href="#Similarity-networks">Similarity networks</a></li>
+        <li><a href="#Bootscan-analysis">Bootscan analysis</a></li>
         <li><a href="#Findsite">Findsite</a></li>
-        <li><a href="#Detection of recombination">Detection of recombination</a></li>
+        <li><a href="#Detection-of-recombination">Detection of recombination</a></li>
       </ul>
   </ol>
 </details>
