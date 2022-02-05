@@ -10,18 +10,18 @@
     <li>
       <a href="#Installation">Installation</a>
       <ul>
-        <li><a href="#Windows version">Windows version</a></li>
-        <li><a href="#Linux/UNIX and Mac OS versions">Linux/UNIX and Mac OS versions</a></li>
+        <li><a href="#Windows-version">Windows version</a></li>
+        <li><a href="#Linux-UNIX-and-Mac-OS-versions">Linux/UNIX and Mac OS versions</a></li>
       </ul>
     </li>
     <li> Available analyses</li>
       <ul>
-        <li><a href="#Group creation">Group creation</a></li>
-        <li><a href="#SimPlot analysis">SimPlot analysis</a></li>
-        <li><a href="#Similarity networks">Similarity networks</a></li>
-        <li><a href="#Bootscan analysis">Bootscan analysis</a></li>
+        <li><a href="#Group-creation">Group creation</a></li>
+        <li><a href="#SimPlot-analysis">SimPlot analysis</a></li>
+        <li><a href="#Similarity-networks">Similarity networks</a></li>
+        <li><a href="#Bootscan-analysis">Bootscan analysis</a></li>
         <li><a href="#Findsite">Findsite</a></li>
-        <li><a href="#Detection of recombination">Detection of recombination</a></li>
+        <li><a href="#Detection-of-recombination">Detection of recombination</a></li>
       </ul>
   </ol>
 </details>
@@ -43,12 +43,12 @@ SimPlot++ offers the following features:
 - Run Phi, NSS and χ2 statistical tests to detect recombination
 - Provide distance calculability diagnostics
 
-
+**Reference:** [Samson, S., Lord, É., & Makarenkov, V. (2022). SimPlot++: a Python application for representing sequence similarity and detecting recombination. arXiv preprint arXiv:2112.09755.](https://arxiv.org/abs/2112.09755)
 
 # Installation
 ## Windows version
 
-SimPlot++ for Windows is available either as an [executable file] (https://github.com/Stephane-S/Simplot_PlusPlus/releases) or as a Python script.
+SimPlot++ for Windows is available either as an [executable file](https://github.com/Stephane-S/Simplot_PlusPlus/releases) or as a Python script.
 
 ### Executable
 The Windows installer can be found at the [release](https://github.com/Stephane-S/Simplot_PlusPlus/releases). Click on the `SimPlot++-x.x-win64.msi` file to download it.
@@ -65,7 +65,7 @@ Assuming Python 3.8 or higher is installed on the machine, the script should run
 3. Install the required libraries using `pip install -r requirements.txt`.
 4. Launch SimPlot++ using `python3 main.py`.
 
-## Linux/UNIX and Mac OS versions
+## Linux UNIX and Mac OS versions
 SimPlot++ is available as a Python script.
 
 ### Python script
