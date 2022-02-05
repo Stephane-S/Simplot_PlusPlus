@@ -29,6 +29,7 @@ matplotlib.use("Qt5Agg")
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg, NavigationToolbar2QT as NavigationToolbar
 from matplotlib.figure import Figure
 from Bio import pairwise2 as pw2
+from Bio.Nexus.Nexus import NexusError
 
 # noinspection PyUnresolvedReferences
 from PyQt5_gui import group_widget
@@ -67,7 +68,7 @@ import lib.Network.Bokeh_graph_functions as Bgf
 
 class MainWindow:
     def __init__(self):
-        self.main_win = QMainWindow()
+        self.main_win = MyWindow()
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self.main_win)
         self.seq_ui = Ui_Seq_window()
@@ -99,7 +100,7 @@ class MainWindow:
         ### this section handles every button click on the mainwindow
 
         # switch to page 1
-        self.ui.Btn_group_page.clicked.connect(lambda: self.ui.Pages_Widget.setCurrentWidget(self.ui.group_page))
+        self.ui.Btn_group_page.clicked.connect(lambda: self.go_to_group_page())
         # switch to page 2
         self.ui.Btn_simplot_page.clicked.connect(lambda: self.go_to_simplot_page())
 
@@ -186,6 +187,13 @@ class MainWindow:
 
         ### Help page
         self.ui.pushButton.clicked.connect(self.send_to_wiki)
+
+    def go_to_group_page(self):
+        if self.worker is None:
+            self.ui.Pages_Widget.setCurrentWidget(self.ui.group_page)
+        else:
+            self.error_msg_box("The group page is not accessible while an analysis is running.")
+
 
     ####################################################
     # This section handles the recombination test page #
@@ -280,28 +288,37 @@ class MainWindow:
     def write_recomb_output(self, str):
         self.ui.textEdit_2.append(str)
 
+    def set_worker_to_none(self):
+        self.worker = None
+
     def start_recombination_test(self):
+        if self.worker is not None:
+            self.error_msg_box("An analysis is already under way.")
+            return
+
         self.ui.textEdit_2.clear()
         settings = self.get_recomb_settings()
         test_instance = PhiAnalyser(Q_output=True)
         test_instance.text_output.connect(self.write_recomb_output)
         # sys.stdout = Stream(newText=self.onUpdateText)
 
-        # Step 2: Create a QThread object
-        self.thread = QThread()
-        # Step 3: Create a worker object
-        self.worker = Worker_recomb(instance=test_instance, data=settings, textedit=self.ui.textEdit_2)
-        # Step 4: Move worker to the thread
-        self.worker.moveToThread(self.thread)
-        # Step 5: Connect signals and slots
-        self.thread.started.connect(self.worker.run)
-        self.worker.finished.connect(self.thread.quit)
-        self.worker.finished.connect(self.worker.deleteLater)
-        self.thread.finished.connect(self.thread.deleteLater)
-        # Step 6: Start the thread
-        self.thread.start()
-        self.worker.finished.connect(self.worker.deleteLater)
-        self.thread.finished.connect(self.thread.deleteLater)
+        if settings["test"] == "phi-test" or settings["test"] == "profile":
+            # Step 2: Create a QThread object
+            self.thread = QThread()
+            # Step 3: Create a worker object
+            self.worker = Worker_recomb(instance=test_instance, data=settings, textedit=self.ui.textEdit_2)
+            # Step 4: Move worker to the thread
+            self.worker.moveToThread(self.thread)
+            # Step 5: Connect signals and slots
+            self.thread.started.connect(self.worker.run)
+            self.worker.finished.connect(self.thread.quit)
+            self.worker.finished.connect(self.set_worker_to_none)
+            self.worker.finished.connect(self.worker.deleteLater)
+            self.thread.finished.connect(self.thread.deleteLater)
+            # Step 6: Start the thread
+            self.thread.start()
+            self.worker.finished.connect(self.worker.deleteLater)
+            self.thread.finished.connect(self.thread.deleteLater)
 
         if settings["test"] == "distance_recombination_test":
             filepath = self.groups.file_path
@@ -315,19 +332,9 @@ class MainWindow:
 
             self.open_model_settings_dialog()
             self.launch_simplot(distance_recomb=True)
-            # sim_dict = self.calc_similarity()
-            # group_ids = self.groups.get_groups_id()
-            # recomb_instance = RecombinationDetection(dist_dict=dist_dict, global_sim_dict=sim_dict, group_ids=group_ids)
-            # result_df = recomb_instance.get_recombination_detect_results()
-            # #print(tabulate(result_df.head(10), headers='keys', tablefmt='psql', showindex=False, numalign="center"))
-            # tabulate.PRESERVE_WHITESPACE = True
-            # self.ui.textEdit_2.append(tabulate(result_df.head(10), headers='keys', tablefmt='html', showindex=False, numalign="center"))
-            # self.ui.progressBar_global.setValue(95)
-            # if settings["save_output"]:
-            #     self.save_recombination_output()
-            # self.ui.progressBar_global.setValue(0)
 
     def launch_distance_recomb(self, dist_dict):
+        self.worker = None
         settings = self.get_recomb_settings()
 
         if dist_dict is not None:
@@ -601,10 +608,17 @@ class MainWindow:
         dist_dict variable in a {"refseq group" : df format}
         :return: no returns, output is sent directly to self.update_bokeh) graph for visualization
         """
+
         if launch:
-            self.network_instance = None
-            self.clear_network_graph()
-            self.launch_simplot(network_analysis=True)
+            if self.worker is not None:
+                self.error_msg_box("An analysis is already under way.")
+                return
+            else:
+                self.network_instance = None
+                self.clear_network_graph()
+                self.launch_simplot(network_analysis=True)
+        else:
+            self.worker = None
 
         if dist_dict is not None:
             group_dict = self.groups.return_groups_dict()
@@ -838,6 +852,10 @@ class MainWindow:
         :param show_window: output will not appear in the ui but in a popup instead
         :return: show output
         """
+        if self.worker is not None:
+            self.error_msg_box("An analysis is already under way.")
+            return
+
         self.clear_bootstrap_canvas_layout()
         self.bootscan_result_dict = None
         refseq = self.ui.comboBox_Bootscan_refseq.currentText()
@@ -897,6 +915,7 @@ class MainWindow:
 
 
     def bootscan_finished(self, dist_dict):
+        self.worker = None
         self.bootscan_result_dict = dist_dict
         refseq = self.ui.comboBox_Bootscan_refseq.currentText()
         refseq = refseq.replace(" ", "_")
@@ -991,6 +1010,9 @@ class MainWindow:
         Launches a bootscan analysis if no distance matrix exist
         :return:
         """
+        if self.worker is not None:
+            self.error_msg_box("An analysis is already under way.")
+            return
 
         if dist_dict is not None:
             self.bootscan_result_dict = dist_dict
@@ -1082,6 +1104,10 @@ class MainWindow:
         return start_pos_list
 
     def launch_simplot(self, plot_progress=True, network_analysis=False, in_window=False, distance_recomb=False):
+        if self.worker is not None:
+            self.error_msg_box("An analysis is already under way.")
+            return
+
         self.clear_canvas_layout()
 
         # grab required data before analysis
@@ -1163,6 +1189,7 @@ class MainWindow:
         self.ui.progressBar_global.setValue(value)
 
     def simplot_launch_finished(self, dist_dict):
+        self.worker = None
         self.simplot_result = dist_dict
         model_settings_dict = self.analysis_instance.get_model_settings()
         window_length = model_settings_dict["window"]
@@ -1300,6 +1327,10 @@ class MainWindow:
         show simplot output in a popup window; launch a simplot analysis if none exist
         :return:
         """
+        if self.worker is not None:
+            self.error_msg_box("An analysis is already under way.")
+            return
+
         if dist_dict is not None:
             self.simplot_result = dist_dict
 
@@ -1462,6 +1493,10 @@ class MainWindow:
             self.ui.radioBtn_use_group_seqs.setEnabled(True)
             self.ui.radioBtn_dist_recomb_test.setEnabled(True)
 
+        if self.groups is not None:
+            if self.groups.get_datatype() == "protein":
+                self.ui.Btn_bootstrap_page.setEnabled(False)
+
     def open_file_info_dialog(self):
         """
         manual user input dialog for file format and datatype
@@ -1492,14 +1527,26 @@ class MainWindow:
         :param file_format: ex: fasta, nexus
         :return: validation of expected characters
         """
-        first_record = next(SeqIO.parse(path, file_format))
+        try:
+            first_record = next(SeqIO.parse(path, file_format))
+        except NexusError as e:
+            self.error_msg_box(f"An error occured while loading the Nexus file with Biopython:\n"
+                               f"{e}")
+            return None
+        except:
+            self.error_msg_box(f"An unexpected error occured while loading the {file_format} file at {path}.")
+            return None
+
         seq = str(first_record.seq)
 
         alphabets = {"dna": re.compile('^[acgtn-]*$', re.I),
+                     "rna": re.compile('^[acgun-]*$', re.I),
                      "protein": re.compile('^[abcdefghijklmnopqrstuvwyzx*-]*$', re.I)}
 
         if alphabets["dna"].search(seq) is not None:
             return "DNA"
+        elif alphabets["rna"].search(seq) is not None:
+            return None
         elif alphabets["protein"].search(seq) is not None:
             return "protein"
         else:
@@ -1509,7 +1556,11 @@ class MainWindow:
         path = pathlib.Path(path_temp)
         format_dict = {
             "fasta": [".fasta", ".fas", ".fa", ".seq", ".fsa", ".fna", ".ffn", ".faa", ".mpfa"],
-            "nexus": [".nexus", ".nex", ".nxs"]
+            "nexus": [".nexus", ".nex", ".nxs"],
+            "pir": [".nbrf", ".pir"],
+            "phylip": [".phy", ".phylip"],
+            "stockholm": [".sto", ".stk", ".stockholm"],
+            "clustal": [".aln", ".clustal", ".clustalw"]
         }
         file_format = None
         for key, value in format_dict.items():
@@ -1537,8 +1588,12 @@ class MainWindow:
             input_format = self.groups.get_file_format()
             datatype = self.groups.get_datatype()
 
-            SeqIO.convert(input_file, input_format, output_file, output_format, molecule_type=datatype)
-            self.add_groups_to_nexus(output_file)
+            try:
+                SeqIO.convert(input_file, input_format, output_file, output_format, molecule_type=datatype)
+                self.add_groups_to_nexus(output_file)
+            except ValueError as e:
+                self.error_msg_box("An error occured while generating the group file:\n"
+                                   f"{e}")
 
     def add_groups_to_nexus(self, output_file):
         """
@@ -1728,12 +1783,27 @@ class MainWindow:
 
             file_format = self.detect_file_format(str(path))
             if file_format is None:
-                file_format, datatype, okPressed = self.open_file_info_dialog()  # manual input by user
+                # file_format, datatype, okPressed = self.open_file_info_dialog()  # manual input by user
+                self.error_msg_box("The extension of the file selected is unknown to SimPlot++. \n"
+                                   "Here is a list fo accepted extension: \n"
+                                   "Fasta: .fasta, .fas, .fa, .seq, .fsa, .fna, .ffn, .faa, .mpfa \n"
+                                   "Nexus: .nexus, .nex, .nxs\n"
+                                   "Pir: .nbrf, .pir \n"
+                                   "Stockholm: .sto, .stk, .stockholm \n"
+                                   "Clustal: .aln, .clustal, .clustalw")
+                self.ui.progressBar_global.setValue(0)
+                return
 
             else:
                 datatype = self.validate_alphabet(path, file_format)
                 if datatype is None:
-                    file_format, datatype, okPressed = self.open_file_info_dialog()  # manual input by user
+                    self.error_msg_box(
+                        "The characters in the multiple sequence alignment did not match the expected alphabets.\n"
+                        "SimPlot++ expect DNA or Protein sequences containing the following characters:\n"
+                        "DNA: ACTGN-\n"
+                        "Protein: ABCDEFGHIJKLMNOPQRSTUVWYZX*-")
+                    self.ui.progressBar_global.setValue(0)
+                    return
 
             self.ui.progressBar_global.setValue(25)
             if okPressed:  # will  be false only if user doesnt press 'ok' on manual datatype/fileformat input
@@ -1744,13 +1814,13 @@ class MainWindow:
                                                                    file_format)  # creates "-" padded fasta copy of seq
 
                     detected_ambiguous_dict = self.check_ambiguous_characters(path, file_format, datatype)
-                    if detected_ambiguous_dict and self.user_pref_dict["display_ambiguous_warning"]: # only True if dict is not empty and user pref selected
+                    if detected_ambiguous_dict and self.user_pref_dict[
+                        "display_ambiguous_warning"]:  # only True if dict is not empty and user pref selected
                         self.info_msg_box(
                             "There are some ambiguous characters in your dataset. "
                             "\nThey will be replaced by \"-\" in the computation if still present after the "
                             "creation of the consensus sequences.", details=detected_ambiguous_dict, ambiguous=True)
                     self.ui.progressBar_global.setValue(50)
-
                     self.groups = Groups(path, file_format, datatype)
                     self.ui.progressBar_global.setValue(75)
 
@@ -1768,13 +1838,13 @@ class MainWindow:
                         pass
                     else:
                         self.groups = None
-                        #print("group not created")
+                        # print("group not created")
 
             self.pickle_previous_file_paths(path)
             self.ui.progressBar_global.setValue(100)
             self.manage_btn_control()
 
-            #populates the free_seq qlistwidget with ungrouped sequences for visual purposes
+            # populates the free_seq qlistwidget with ungrouped sequences for visual purposes
             for seq in self.groups.get_ungrouped_seq():
                 self.ui.listWidget_free_seq.addItem(seq)
 
@@ -2870,6 +2940,16 @@ class Worker_bootscan(QObject):
             start_pos += step
 
         return start_pos_list
+
+class MyWindow(QMainWindow):
+    def closeEvent(self, event):
+        reply = QtWidgets.QMessageBox.question(self, 'Quit', 'Are you sure you want to quit?\n'
+                                                             'Unsaved groups and results will be lost.',
+                                               QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No, QtWidgets.QMessageBox.No)
+        if reply == QtWidgets.QMessageBox.Yes:
+            event.accept()
+        else:
+            event.ignore()
 
 def kill_workers():
     main_win.status.terminate()

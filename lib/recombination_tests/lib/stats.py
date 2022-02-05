@@ -152,16 +152,16 @@ def max_chi(window_scale, alignment, site_desc, site_states, num_taxa, num_sites
     print("Number of umabiguous polymorphic sites is", num_poly_unambig, " \n")
     permutation = np.empty(num_poly_unambig)
     permutation = identity_permutation(permutation, num_poly_unambig)
-    print ("permutatation:", permutation)
+    # ("permutatation:", permutation)
 
     maxchi_window = int(num_poly_unambig * window_scale)
-    print("Window size is", maxchi_window, " polymorphic sites")
+    #("Window size is", maxchi_window, " polymorphic sites")
     orig_maxchi, result_tuple = all_pairs_maxchi(poly_alignment_unambig, num_taxa, num_poly_unambig, maxchi_window, permutation, poly_sites_desc_unambig, True)
-    print ("orig_maxchi", orig_maxchi)
+    #print ("orig_maxchi", orig_maxchi)
     emp_maxchi = 0
     for i in prange(num_trials):
         perm = sample_permutation(permutation, num_sites)#num_poly_unambig
-        print ("i: ", len(perm), perm)
+        #print ("i: ", len(perm), perm)
         cur_maxchi, ignore_tuple = all_pairs_maxchi(poly_alignment_unambig, num_taxa, num_poly_unambig, maxchi_window, perm, poly_sites_desc_unambig, False)
         if cur_maxchi >= orig_maxchi:
             # print ("boosted:", cur_maxchi, " > ", orig_maxchi, " emp_maxchi:", emp_maxchi)
@@ -248,7 +248,7 @@ def calc_orig_maxchi(window_scale, alignment, site_desc, site_states, num_taxa, 
     print("Number of umabiguous polymorphic sites is", num_poly_unambig, " \n")
     permutation = np.empty(num_poly_unambig)
     permutation = identity_permutation(permutation, num_poly_unambig)
-    print("permutatation:", permutation)
+    #print("permutatation:", permutation)
 
     maxchi_window = int(num_poly_unambig * window_scale)
     print("Window size is", maxchi_window, " polymorphic sites")

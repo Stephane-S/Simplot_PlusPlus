@@ -26,7 +26,7 @@ def extract_fasta(data_file, datatype):
             j += 1
         i += 1
     np.set_printoptions(threshold=np.inf)
-    print(num_taxa, num_sites)
+    #print(num_taxa, num_sites)
     return taxa_list, ascii_seq_list, num_sites, num_taxa
 
 

@@ -11,7 +11,7 @@ bdist_msi_options = {
 
 # Dependencies are automatically detected, but it might need fine tuning.
 # "packages": ["os"] is used as example only
-build_exe_options = {"packages": ["os"], "excludes": []}
+build_exe_options = {"packages": ["os"], "excludes": [], "include_files": ["example_data"]}
 
 # base="Win32GUI" should be used only for Windows GUI app
 base = None
@@ -20,10 +20,14 @@ if sys.platform == "win32":
 
 setup(
     name = "SimPlot++",
-    version = "1.0",
+    version = "1.2",
     author = "Stephane Samson",
     description = "Recombination detection software",
     options = {'bdist_msi': bdist_msi_options,
                "build_exe": build_exe_options},
-    executables = [Executable("main.py", base=base, icon="SimPlot.ico", targetName="SimPlot++.exe")]
+    executables = [Executable("main.py", base=base,
+                              icon="SimPlot.ico",
+                              targetName="SimPlot++.exe",
+                              shortcut_name="SimPlot++",
+                              shortcutDir="DesktopFolder")]
 )
