@@ -19,7 +19,7 @@
         <li><a href="#Group-creation">Group creation</a></li>
         <li><a href="#SimPlot-analysis">SimPlot analysis</a></li>
         <li><a href="#Similarity-networks">Similarity networks</a></li>
-        <li><a href="#Bootscan-analysis">Bootscan analysis</a></li>
+        <li><a href="#BootScan-analysis">BootScan analysis</a></li>
         <li><a href="#Findsites">Findsites</a></li>
         <li><a href="#Detection-of-recombination">Detection of recombination</a></li>
       </ul>
@@ -30,7 +30,14 @@
 
 # About The Project
 
-Simplot++ is an open-source multi-platform application designed by Stéphane Samson, Étienne Lord and Vladimir Makarenkov (Université du Québec à Montréal). It is implemented in Python. SimPlot++ produces publication-ready SimPlot and BootScan plots using 43 nucleotide and 20 amino acid distance models. Intergenic and intragenic recombination events can be identified using Phi, χ2, NSS and Proportion tests. 
+Simplot++ is an open-source multi-platform application designed by Stéphane Samson, Étienne Lord and Vladimir Makarenkov (Université du Québec à Montréal). It is implemented in Python. SimPlot++ produces publication-ready SimPlot and 
+
+
+
+
+
+
+plots using 43 nucleotide and 20 amino acid distance models. Intergenic and intragenic recombination events can be identified using Phi, χ2, NSS and Proportion tests. 
 Simplot++ also generates and analyzes interactive sequence similarity networks, while supporting multi-processing and providing distance calculability diagnostics.
 
 SimPlot++ offers the following features:
@@ -162,7 +169,7 @@ The graph data and visualization can be saved in an HTML file.
 
 
 
-# Bootscan analysis
+# BootScan analysis
 
 ## Methodology
 Bootscanning is a pipeline consisting of 4 main steps, all done using a sliding window analysis (as in the SimPlot analysis).
@@ -191,7 +198,7 @@ Bootscanning is a pipeline consisting of 4 main steps, all done using a sliding 
 
 **Multiprocessing**: Allows multiple windows to be analyzed simultaneously (recommended for large datasets)
 
-### Bootscan analysis example
+### BootScan analysis example
 
 ![Bootscan gif](https://github.com/Stephane-S/Simplot_PlusPlus/blob/master/Docs/images/bootscan_gif.gif)
 
