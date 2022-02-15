@@ -23,6 +23,9 @@
         <li><a href="#Findsites">Findsites</a></li>
         <li><a href="#Detection-of-recombination">Detection of recombination</a></li>
       </ul>
+    <li>
+      <a href="#contact">Contact</a>
+    </li>
   </ol>
 </details>
 
@@ -227,6 +230,10 @@ Moreover, a new simple Proportion test has been designed as a complement to the 
 
 ### Example Output
 ![recombination](https://github.com/Stephane-S/Simplot_PlusPlus/blob/master/Docs/images/recomb_gif.gif)
+
+# Contact
+Please email us at : <samson.stephane.3@courrier.uqam.ca> or <makarenkov.vladimir@uqam.ca> for any question or feedback.
+
 
 
 
