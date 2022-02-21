@@ -1,4 +1,5 @@
-﻿﻿﻿﻿﻿﻿﻿﻿<h1  align="center">SimPlot++</h1>
+﻿﻿﻿﻿﻿﻿﻿﻿<h1  align="center"> SimPlot++ <p align='center'> [![Hits](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2FStephane-S%2FSimplot_PlusPlus&count_bg=%2379C83D&title_bg=%23555555&icon=&icon_color=%23D9D9D9&title=hits&edge_flat=false)](https://hits.seeyoufarm.com) </p>
+
 <h2  align="center">Multi-platform application for representing sequence similarity and detecting recombination</h2>
 
 <details open>
