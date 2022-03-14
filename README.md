@@ -6,7 +6,7 @@
   <summary>Table of Contents</summary>
   <ol>
     <li>
-      <a href="#about-the-project">About the Project</a>
+      <a href="#about-the-project">About the project</a>
     </li>
     <li>
       <a href="#Installation">Installation</a>
@@ -32,7 +32,7 @@
 
 
 
-# About The Project
+# About the project
 
 Simplot++ is an open-source multi-platform application designed by Stéphane Samson, Étienne Lord and Vladimir Makarenkov (Université du Québec à Montréal). It is implemented in Python. SimPlot++ produces publication-ready SimPlot and 
 
