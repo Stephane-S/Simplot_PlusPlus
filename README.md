@@ -165,7 +165,7 @@ By adjusting the minimum similarity threshold required to show each of the edge 
 
 Datatables allows the user to view the most important similarity regions between the network nodes (i.e. MSA sequences or sub-sequences). The results of the Proportion test are also available in a datatable (discussed in more details in the statistical methods section).
 
-The graph data and visualization can be saved in an HTML file.
+The graph data and visualization can be saved in an HTML file. The graph itself can be saved as either a .png or .svg (the option is in the user preference page) directly from the toolbox in the HTML file.
 
 ### Similarity network output example
 
