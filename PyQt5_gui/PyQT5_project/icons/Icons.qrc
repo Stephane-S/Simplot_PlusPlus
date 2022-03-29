@@ -17,7 +17,7 @@
         <file>active/user_pref_active.svg</file>
         <file>active/recombination_active.svg</file>
         <file>active/question_active.svg</file>
-        <file>active/pause_button.svg</file>
+        <file>active/pause_button_active.svg</file>
     </qresource>
     <qresource prefix="/new/hover">
         <file>hover/Bootscan_page_hover.svg</file>
@@ -37,6 +37,7 @@
         <file>hover/user_pref_hover.svg</file>
         <file>hover/recombination_hover.svg</file>
         <file>hover/question_hover.svg</file>
+        <file>hover/pause_button_hover.svg</file>
     </qresource>
     <qresource prefix="/new/disabled">
         <file>disabled/Bootscan_page_grey.svg</file>
@@ -74,6 +75,7 @@
         <file>pressed/user_pref_pressed.svg</file>
         <file>pressed/recombination_pressed.svg</file>
         <file>pressed/question_pressed.svg</file>
+        <file>pressed/pause_button_pressed.svg</file>
     </qresource>
     <qresource prefix="/new/logo">
         <file>logo/simplot++_logo.svg</file>

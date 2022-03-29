@@ -12,6 +12,8 @@ import pandas as pd
 import time
 from numba import njit
 
+from PyQt5 import QtCore
+
 class Bootscan_analysis:
     def __init__(self, filepath, filetype, group_dict, consensus_threshold, run_status):
         self.consensus_threshold = consensus_threshold
@@ -153,9 +155,15 @@ class Bootscan_analysis:
 
             msas, fake_id_list = self.msa_bootstrap(start_pos)
 
+            if self.run_status.get_status() is False:
+                return {}
+
             trees = []
             for msa in msas:
                 trees.append(self.dnadist(msa, fake_id_list))
+
+            if self.run_status.get_status() is False:
+                return {}
 
             occur_list = []
             for tree in trees:

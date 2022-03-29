@@ -10,6 +10,8 @@ from cogent3 import load_aligned_seqs, make_aligned_seqs
 import timeit
 from cogent3.evolve import distance
 from cogent3.evolve.models import *
+import sys
+from typing import TextIO
 pd.options.mode.chained_assignment = None  # default='warn'
 
 
@@ -148,7 +150,10 @@ class CalcDist:
             dist = None
 
         if aln is not None:
-            dist = self.run_cogent3_model(aln, model, datatype)
+            try:
+                dist = self.run_cogent3_model(aln, model, datatype)
+            except Exception as e:
+                dist = None
         if dist is not None:
             try:
                 self.dist_mat = self.table_to_df(dist)
@@ -157,8 +162,11 @@ class CalcDist:
                 pass
 
     def run_cogent3_model(self, aln, model, datatype):
+        # this is essential for cogent3 when running as an executable. Otherwise the stdout throws an error.
+        sys.stdout = TextIO()
+
         #print(f"trying {model} with datatype {datatype}:")
-        dist = None
+        #dist = None
         if datatype == "DNA" or datatype == "protein":  #not working because should or dna == "protein but useful for now until datatype is fixed
             if model in ["F81", "HKY85", "TN93", "GTR", "ssGN"] or model in ["DSO78", "AH96", "AH96_mtmammals", "JTT92",
                                                                              "WG01"]:

@@ -11,7 +11,7 @@ bdist_msi_options = {
 
 # Dependencies are automatically detected, but it might need fine tuning.
 # "packages": ["os"] is used as example only
-build_exe_options = {"packages": ["os"], "excludes": [], "include_files": ["example_data"]}
+build_exe_options = {"packages": ["os", "cogent3"], "excludes": [], "include_files": ["example_data"]}
 
 # base="Win32GUI" should be used only for Windows GUI app
 base = None
@@ -20,7 +20,7 @@ if sys.platform == "win32":
 
 setup(
     name = "SimPlot++",
-    version = "1.2",
+    version = "1.3",
     author = "Stephane Samson",
     description = "Recombination detection software",
     options = {'bdist_msi': bdist_msi_options,

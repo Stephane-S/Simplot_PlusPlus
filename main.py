@@ -3,7 +3,7 @@
 import sys
 from PyQt5 import QtWidgets, QtCore, QtGui #QtWebEngineWidgets
 from PyQt5.Qt import *
-from PyQt5.QtWidgets import QApplication, QMainWindow, QFileDialog, QMessageBox, QMenu
+from PyQt5.QtWidgets import QApplication, QMainWindow, QFileDialog, QMessageBox, QMenu, QStatusBar
 from PyQt5.QtGui import QFontDatabase, QMouseEvent
 import matplotlib
 import matplotlib.pyplot as plt
@@ -66,9 +66,14 @@ from PyQt5_gui.app_settings import Ui_UserPreferences as user_pref_dialog
 from lib.recombination_tests.phipack_main import *
 import lib.Network.Bokeh_graph_functions as Bgf
 
+
 class MainWindow:
     def __init__(self):
         self.main_win = MyWindow()
+        self.statusbar = QStatusBar()
+        self.statuslabel = QLabel()
+        self.statusbar.addPermanentWidget(self.statuslabel)
+        self.main_win.setStatusBar(self.statusbar)
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self.main_win)
         self.seq_ui = Ui_Seq_window()
@@ -91,9 +96,12 @@ class MainWindow:
         self.show_network_in_gui = False
         self.thread = None
         self.worker = None
+        self.observer_thread = None
+        self.observer_worker = None
         self.status = RunningStatus()
 
         self.disable_all_btn_before_browse()
+        self.initial_cancel_btn_hide()
         self.user_pref = user_preferences()
         self.user_pref_dict = self.user_pref.load_user_pref()
 
@@ -139,6 +147,8 @@ class MainWindow:
         #view quality report
         #self.ui.Btn_quality.clicked.connect(lambda: self.show_simplot_quality_report())
         self.ui.Btn_quality.clicked.connect(lambda: self.call_quality_report_generator())
+        # cancel analysis
+        self.ui.Btn_simplot_cancel.clicked.connect(lambda: self.stop_simplot())
 
 
         ### bootscan page
@@ -152,6 +162,8 @@ class MainWindow:
         self.ui.Btn_bootscan_settings.clicked.connect(lambda: self.open_bootscan_dialog())
         # refseq combobox bootscan
         self.ui.comboBox_Bootscan_refseq.currentTextChanged.connect(lambda: self.bootscan_change_refseq())
+        # cancel analysis
+        self.ui.Btn_bootscan_cancel.clicked.connect(lambda: self.stop_bootscan())
 
 
         ### findsite page
@@ -171,6 +183,8 @@ class MainWindow:
         self.ui.Btn_start_sp_network.clicked.connect(lambda: self.start_network_analysis(dist_dict=None, launch=True))
         self.ui.Btn_network_settings.clicked.connect(lambda: self.open_model_settings_dialog())
         self.ui.Btn_save_html.clicked.connect(lambda: self.save_network_html())
+        # cancel analysis
+        self.ui.Btn_network_cancel.clicked.connect(lambda: self.stop_network())
 
         ### group page reopen feature
         # reopen feature inspired from https://www.youtube.com/watch?v=Aj-Q8pu_HG0
@@ -188,12 +202,43 @@ class MainWindow:
         ### Help page
         self.ui.pushButton.clicked.connect(self.send_to_wiki)
 
+
     def go_to_group_page(self):
         if self.worker is None:
             self.ui.Pages_Widget.setCurrentWidget(self.ui.group_page)
         else:
             self.error_msg_box("The group page is not accessible while an analysis is running.")
 
+    def change_status_label(self, string):
+        self.statuslabel.setText(string)
+
+    ####################################################
+    # This section handles the cancel analysis feature #
+    ####################################################
+    def cancel_launch_btn_switch(self, analysis=None):
+        if analysis == "simplot":
+            self.ui.Btn_start_simplot.hide()
+            self.ui.Btn_simplot_cancel.show()
+        elif analysis == "bootscan":
+            self.ui.Btn_start_bootscan.hide()
+            self.ui.Btn_bootscan_cancel.show()
+        elif analysis == "network":
+            self.ui.Btn_start_sp_network.hide()
+            self.ui.Btn_network_cancel.show()
+        else:
+            self.ui.Btn_start_simplot.show()
+            self.ui.Btn_simplot_cancel.hide()
+            self.ui.Btn_start_bootscan.show()
+            self.ui.Btn_bootscan_cancel.hide()
+            self.ui.Btn_start_sp_network.show()
+            self.ui.Btn_network_cancel.hide()
+
+        self.statuslabel.setText(f"")
+
+    def initial_cancel_btn_hide(self):
+        self.ui.Btn_simplot_cancel.hide()
+        self.ui.Btn_bootscan_cancel.hide()
+        self.ui.Btn_network_cancel.hide()
 
     ####################################################
     # This section handles the recombination test page #
@@ -257,7 +302,7 @@ class MainWindow:
 
         distance_test = "This test detects sites of potential mosaicism based on the results of a distance proportion test\n" \
                         "- Samson et al. (2022). Un nouveau logiciel pour l'analyse de similarité entre les séquences" \
-                        "   génétiques et son application à des données évolutives de SARS-CoV-2. Master's Thesis, Université du Québec à Montréal" \
+                        "   génétiques et son application à des données évolutives de SARS-CoV-2. Master's Thesis, Université du Québec à Montréal\n\n" \
                         "Simplot settings will be chosen when the start button is pressed."
         self.update_textedit_phitest_page(phi_test_text)
         self.ui.radioBtn_phi_test.clicked.connect(lambda: self.update_textedit_phitest_page(phi_test_text))
@@ -338,6 +383,7 @@ class MainWindow:
         settings = self.get_recomb_settings()
 
         if dist_dict is not None:
+            self.statuslabel.setText(f"Starting proportion test")
             sim_dict = self.calc_similarity()
             group_ids = self.groups.get_groups_id()
             recomb_instance = RecombinationDetection(dist_dict=dist_dict, global_sim_dict=sim_dict, group_ids=group_ids)
@@ -350,6 +396,7 @@ class MainWindow:
             if settings["save_output"]:
                 self.save_recombination_output()
             self.ui.progressBar_global.setValue(0)
+        self.statuslabel.setText(f"")
 
 
     def save_recombination_output(self):
@@ -621,6 +668,7 @@ class MainWindow:
             self.worker = None
 
         if dist_dict is not None:
+            self.statuslabel.setText(f"Generating similarity network")
             group_dict = self.groups.return_groups_dict()
             consensus_dict = self.analysis_instance.get_consensus_dict()
             #self.analysis_instance
@@ -654,6 +702,8 @@ class MainWindow:
                 self.error_msg_box("Computation failed. No output obtained.")
 
             self.ui.progressBar_global.setValue(0)
+
+        self.statuslabel.setText("")
 
     def update_bokeh_graph(self, seq_length, step, model_settings_dict, recombination_df):
         """
@@ -690,10 +740,11 @@ class MainWindow:
         else:
             if self.network_instance is not None:
                 group_colors = self.groups.get_groups_colors()
+                save_as_svg = self.user_pref_dict["network_svg"]
                 try:
                     graph_global_edge, graph_local_edge = self.network_instance.create_graph(seq_length, group_colors)
 
-                    html_file = Bgf.plot_bokeh(graph_global_edge, graph_local_edge, seq_length, step, model_settings_dict, recombination_df)
+                    html_file = Bgf.plot_bokeh(graph_global_edge, graph_local_edge, seq_length, step, model_settings_dict, recombination_df, save_as_svg)
                     self.clear_network_graph()
                     self.open_html_in_browser()
                 except KeyError:
@@ -764,6 +815,13 @@ class MainWindow:
             for item in path_list:
                 action = menu.addAction(str(item))
                 action.setIconVisibleInMenu(True)
+
+    def stop_network(self):
+        self.statuslabel.setText("Canceling running tasks")
+        self.status.terminate()
+        self.clear_network_graph()
+        self.ui.progressBar_global.setValue(0)
+        self.worker = None
 
     #############################################
     # This section handles the findsite feature #
@@ -896,7 +954,7 @@ class MainWindow:
         # Step 2: Create a QThread object
         self.thread = QThread()
         # Step 3: Create a worker object
-        self.worker = Worker_bootscan(instance=self.bootscan_instance, settings=settings_dict, canvas=self.bootscan_canvas, run_status=self.status)
+        self.worker = Worker_bootscan(instance=self.bootscan_instance, settings=settings_dict, canvas=self.bootscan_canvas, run_status=self.status, status_label=self.statuslabel)
         # Step 4: Move worker to the thread
         self.worker.moveToThread(self.thread)
         # Step 5: Connect signals and slots
@@ -905,13 +963,19 @@ class MainWindow:
         self.worker.finished.connect(self.worker.deleteLater)
         self.thread.finished.connect(self.thread.deleteLater)
         self.worker.return_result.connect(self.bootscan_finished)
+        self.worker.process_stopped.connect(self.stop_bootscan)
         if show_window:
             self.worker.return_result.connect(self.plot_window_bootscan)
         self.worker.update_progress_bar.connect(self.update_progress_bar)
         self.worker.finished.connect(self.worker.deleteLater)
         self.thread.finished.connect(self.thread.deleteLater)
+        self.thread.finished.connect(self.status.reset_status)
+        self.thread.finished.connect(self.cancel_launch_btn_switch)
+        self.thread.finished.connect(lambda: print("bootscan thread finished"))
         # Step 6: Start the thread
         self.thread.start()
+
+        self.cancel_launch_btn_switch(analysis="bootscan")
 
 
     def bootscan_finished(self, dist_dict):
@@ -1060,6 +1124,13 @@ class MainWindow:
 
         return dist_mat
 
+    def stop_bootscan(self):
+        self.statuslabel.setText("Canceling running tasks")
+        self.status.terminate()
+        self.clear_bootstrap_canvas_layout()
+        self.ui.progressBar_global.setValue(0)
+        self.worker = None
+
     ############################################
     # this section handles the simplot feature #
     ############################################
@@ -1163,7 +1234,7 @@ class MainWindow:
         # Step 3: Create a worker object
         self.worker = Worker_simplot(instance=self.analysis_instance, settings=settings_dict,
                                      output=self.simplot_result, canvas=self.canvas,
-                                     run_status=self.status)
+                                     run_status=self.status, status_label=self.statuslabel)
         # Step 4: Move worker to the thread
         self.worker.moveToThread(self.thread)
         # Step 5: Connect signals and slots
@@ -1173,17 +1244,24 @@ class MainWindow:
         self.thread.finished.connect(self.thread.deleteLater)
         if network_analysis:
             self.worker.return_result.connect(self.start_network_analysis)
+            self.worker.process_stopped.connect(self.stop_network)
+            self.cancel_launch_btn_switch(analysis="network")
         elif distance_recomb:
             self.worker.return_result.connect(self.launch_distance_recomb)
         else:
             self.worker.return_result.connect(self.simplot_launch_finished)
+            self.worker.process_stopped.connect(self.stop_simplot)
+            self.cancel_launch_btn_switch(analysis="simplot")
             if in_window:
                 self.worker.return_result.connect(self.plot_in_window)
         self.worker.update_progress_bar.connect(self.update_progress_bar)
         self.worker.finished.connect(self.worker.deleteLater)
         self.thread.finished.connect(self.thread.deleteLater)
+        self.thread.finished.connect(self.status.reset_status)
+        self.thread.finished.connect(self.cancel_launch_btn_switch)
         # Step 6: Start the thread
         self.thread.start()
+
 
     def update_progress_bar(self, value):
         self.ui.progressBar_global.setValue(value)
@@ -1229,6 +1307,7 @@ class MainWindow:
             save_path = save_path / file_name
 
             self.call_quality_report_generator(save_path)
+
 
     def call_quality_report_generator(self, save_path=None):
         self.create_distance_report()
@@ -1418,6 +1497,13 @@ class MainWindow:
                     self.error_msg_box(str(e) + f"\n\n your csv file is available here: \n {path}")
                 except OSError:
                     self.error_msg_box(str(e) + "\n\n unable to write csv file.")
+
+    def stop_simplot(self):
+        self.statuslabel.setText("Canceling running tasks")
+        self.status.terminate()
+        self.clear_canvas_layout()
+        self.ui.progressBar_global.setValue(0)
+        self.worker = None
 
     #######################################
     # this section handles the group page #
@@ -2064,6 +2150,7 @@ class MainWindow:
         self.app_settings.checkBox_normalize_simplot.setChecked(pref_dict["normalize_simplot"])
         self.app_settings.spinBox_nprocs.setValue(pref_dict["nprocs"])
         self.app_settings.spinBox_nprocs.setMaximum(max_nprocs)
+        self.app_settings.checkBox_network_svg.setChecked(pref_dict["network_svg"])
 
     def save_user_pref(self):
         threshold_value = self.app_settings.spinBox_consensus_threshold.value()/100
@@ -2073,7 +2160,8 @@ class MainWindow:
                           "X_grid_lines": str(self.app_settings.checkBox_show_x_grid.isChecked()),
                           "Y_grid_lines": str(self.app_settings.checkBox_show_y_grid.isChecked()),
                              "normalize_simplot": str(self.app_settings.checkBox_normalize_simplot.isChecked()),
-                             "nprocs": str(self.app_settings.spinBox_nprocs.value())
+                             "nprocs": str(self.app_settings.spinBox_nprocs.value()),
+                             "network_svg": str(self.app_settings.checkBox_network_svg.isChecked())
                           }
 
         self.user_pref.create_preference_config_file(updated_pref_dict)
@@ -2081,7 +2169,6 @@ class MainWindow:
 
 
     def save_consensus_fasta(self, recomb_test=False, recomb_consensus= None):
-
 
         if self.groups is not None:
             filepath = self.groups.get_file_path()
@@ -2433,7 +2520,7 @@ class MainWindow:
                       "mclachlan" : "Scoring matrix based on the conservation of spatial structures in distantly-related protein families (McLachlan 1971, Journal of Molecular Biology 61: 409-424).",
                       "mdm78" : "This model is based on the Mutation Data Matrix developped by Schwartz and Dayhoff (1978).",
                       "rao" : "Scoring matrix for amino acid residue exchanges based on residue characteristic physical parameters (Rao 1987, International Journal of Peptide and Protein Research: 29(2): 276-281).",
-                      "risler" : "Scoring matrix based on multi-dimensional statistical methods, efficient for scoring distant sequences(Risel et al. 1988, Journal of Molecular Biology 204(4): 1019-1029).",
+                      "risler" : "Scoring matrix based on multi-dimensional statistical methods, efficient for scoring distant sequences(Risler et al. 1988, Journal of Molecular Biology 204(4): 1019-1029).",
                       "schneider" : "Empirical codon substitution matrix (Scheinder, Cannarozzi and Gonnet 2005, BMC Bioinformatics 6:134)",
                       "str" : "Model based on the application of a hybrid set of scoring matrices (Henikoff 1993, Proteins: Structure, Function, and Genetics: 17(1): 49-61).",
                       "trans" : "Model based on a transition and transversion scoring matrix to reduce noise when comparing distantly related sequences (Wheeler 1996)."
@@ -2704,17 +2791,22 @@ class Worker_simplot(QObject):
     finished = pyqtSignal()
     return_result = pyqtSignal(dict)
     update_progress_bar = pyqtSignal(int)
+    process_stopped = pyqtSignal()
     #update_canvas = pyqtSignal(dict)
 
-    def __init__(self, instance, settings, output, canvas, run_status):
+    def __init__(self, instance, settings, output, canvas, run_status, status_label):
         super().__init__()
         self.instance = instance
         self.settings = settings
         self.simplot_result = output
         self.simplot_canvas = canvas
         self.run_status = run_status
+        self.status_label = status_label
+
+        # self.instance.test = self.StatusLabel
 
     def run(self):
+        self.status_label.setText(f"Launching analysis")
         multiproc = self.settings["multiproc"]
         window_length = self.settings["window"]
         step = self.settings["step"]
@@ -2733,22 +2825,26 @@ class Worker_simplot(QObject):
         else:
             refresh_rate = None
 
+        self.status_label.setText(f"Initializing SimPlot")
+
         if multiproc:
             start_pos_list = self.calculate_all_start_pos(window_length, seq_length, step)
 
             raw_dist_matrices = self.mp_simplot(start_pos_list, nprocs)
+            self.status_label.setText(f"Aggregating SimPlot results")
             dist_dict = self.instance.create_dist_dict()
             if self.run_status.get_status():
                 for column, dist_matrix in raw_dist_matrices.items():
                     real_column = str(int(column + (window_length / 2)))
                     dist_dict = self.instance.extract_all_distances(dist_matrix, real_column, dist_dict)
 
-
         else:
+            # self.instance.status_label = self.status_label
             i = 0
             start_pos = 0
             dist_dict = None
             while start_pos + window_length < seq_length and self.run_status.get_status():
+                self.status_label.setText(f"SimPlot: Completed {int((i/(iter-1))*100)} % of windows")
                 dist_dict = self.instance.get_all_distances(start_pos, dist_dict, multiproc=False)
                 start_pos += step
                 if refresh_rate is not None and plot_progress and i % refresh_rate == 0 and network_analysis is False and distance_recomb is False:
@@ -2775,10 +2871,15 @@ class Worker_simplot(QObject):
 
         # if network_analysis:
         #     return dist_dict
+        if main_win.status.get_status() is False:
+            self.process_stopped.emit()
+            self.update_progress_bar.emit(0)
+        else:
+            self.simplot_result = dist_dict
+            self.return_result.emit(dist_dict)
+            self.update_progress_bar.emit(100)
+            self.update_progress_bar.emit(0)
 
-        self.simplot_result = dist_dict
-        self.update_progress_bar.emit(100)
-        self.return_result.emit(dist_dict)
         self.finished.emit()
 
 
@@ -2805,9 +2906,13 @@ class Worker_simplot(QObject):
     def mp_simplot(self, start_pos_list, nprocs):
         i = 0
         result_dict = {}
+        self.instance.status_label = None  # QLabel cannot be pickled
+        self.status_label.setText(f"Initializing the ProcessPool with {nprocs} cores")
         with ProcessPoolExecutor(max_workers=nprocs) as executor:
             for num, factors in zip(start_pos_list, executor.map(self.instance.get_all_distances, start_pos_list)):
                 self.update_progress_bar.emit(int((i / len(start_pos_list) * 90)+5))
+                if self.run_status.get_status():
+                    self.status_label.setText(f"SimPlot: completed {int((i / len(start_pos_list))*100)} % of windows")
                 i += 1
                 result_dict[num] = factors
         return result_dict
@@ -2845,16 +2950,19 @@ class Worker_bootscan(QObject):
     progress = pyqtSignal(int)
     return_result = pyqtSignal(dict)
     update_progress_bar = pyqtSignal(int)
+    process_stopped = pyqtSignal()
     #update_canvas = pyqtSignal(dict)
 
-    def __init__(self, instance, settings, canvas, run_status):
+    def __init__(self, instance, settings, canvas, run_status, status_label):
         super().__init__()
         self.instance = instance
         self.settings = settings
         self.bootscan_canvas = canvas
         self.run_status = run_status
+        self.status_label = status_label
 
     def run(self):
+        self.status_label.setText(f"Launching analysis")
         window_length = self.settings["window_length"]
         step = self.settings["step"]
         seq_length = self.settings["seq_length"]
@@ -2865,9 +2973,11 @@ class Worker_bootscan(QObject):
 
         multiproc = self.settings["multiproc"]
 
+        self.status_label.setText(f"Initializing BootScan")
         if multiproc:
             start_pos_list = self.calculate_all_start_pos(window_length, seq_length, step)
             dist_dict = self.mp_bootscan(start_pos_list, nprocs)
+            self.status_label.setText(f"Aggregating BootScan results")
 
         else:
             i = 0
@@ -2875,6 +2985,7 @@ class Worker_bootscan(QObject):
             dist_dict = None
             while start_pos + window_length < seq_length and self.run_status.get_status():
                 dist_dict = self.instance.compute_bootscan(start_pos, dist_dict, multiproc=False)
+                self.status_label.setText(f"SimPlot: Completed {int((i/(iter-1))*100)} % of windows")
                 start_pos += step
                 plot_progress = True
                 if refresh_rate is not None and plot_progress and i % refresh_rate == 0:
@@ -2886,8 +2997,13 @@ class Worker_bootscan(QObject):
 
         self.update_progress_bar.emit(100)
 
-        self.update_progress_bar.emit(0)
-        self.return_result.emit(dist_dict)
+        if main_win.status.get_status() is False:
+            self.process_stopped.emit()
+            self.update_progress_bar.emit(0)
+        else:
+            self.update_progress_bar.emit(0)
+            self.return_result.emit(dist_dict)
+
         self.finished.emit()
 
     def update_bootscan_canvas(self, df):
@@ -2921,6 +3037,7 @@ class Worker_bootscan(QObject):
     def mp_bootscan(self, start_pos_list, nprocs):
         i = 0
         # result_dict  = {}
+        self.status_label.setText(f"Initializing the ProcessPool with {nprocs} cores")
         result_dict = self.instance.build_result_dict()
 
         with ProcessPoolExecutor(max_workers=nprocs) as executor:
@@ -2928,6 +3045,8 @@ class Worker_bootscan(QObject):
                                     executor.map(self.instance.compute_bootscan, start_pos_list)):
                 result_dict = self.instance.update_result_dict(occur_dict, num, result_dict)
                 self.update_progress_bar.emit(int((i / len(start_pos_list) * 90) + 5))
+                if self.run_status.get_status():
+                    self.status_label.setText(f"BootScan: completed {int((i / len(start_pos_list))*100)} % of windows")
                 i += 1
                 #result_dict[num] = occur_dict
         return result_dict
@@ -2941,6 +3060,7 @@ class Worker_bootscan(QObject):
 
         return start_pos_list
 
+
 class MyWindow(QMainWindow):
     def closeEvent(self, event):
         reply = QtWidgets.QMessageBox.question(self, 'Quit', 'Are you sure you want to quit?\n'
@@ -2950,6 +3070,7 @@ class MyWindow(QMainWindow):
             event.accept()
         else:
             event.ignore()
+
 
 def kill_workers():
     main_win.status.terminate()

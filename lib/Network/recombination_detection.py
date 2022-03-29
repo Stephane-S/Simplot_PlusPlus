@@ -142,8 +142,8 @@ class RecombinationDetection:
                     if first_pos is not None and last_pos is not None:
                         temp_list = [refseq, id, first_pos, last_pos, round(score, 2)]
                         result_list.append(temp_list)
-                        if round(score, 2) > 40:
-                            print (temp_list)
+                        # if round(score, 2) > 40:
+                        #     print (temp_list)
                         first_pos, last_pos, score = None, None, 0
 
         return result_list

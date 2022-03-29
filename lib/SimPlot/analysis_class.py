@@ -391,7 +391,6 @@ class SimplotAnalysis:
         return gap_report_df, gap_threshold_df
 
 
-
     def get_all_distances(self, start_pos, dist_dict=None, multiproc=True):
         if start_pos == 0:
             if not multiproc:

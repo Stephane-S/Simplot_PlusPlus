@@ -30,6 +30,7 @@ class user_preferences:
                 user_pref_dict["Y_grid_lines"] = config.getboolean("user_preferences", "Y_grid_lines")
                 user_pref_dict["normalize_simplot"] = config.getboolean("user_preferences", "normalize_simplot")
                 user_pref_dict["nprocs"] = config.getint("user_preferences", "nprocs")
+                user_pref_dict["network_svg"] = config.getboolean("user_preferences", "network_svg")
             except Exception:
                 print ("error exception preferences")
                 self.create_preference_config_file()
@@ -49,7 +50,8 @@ class user_preferences:
                               "X_grid_lines": "false",
                               "Y_grid_lines": "false",
                               "normalize_simplot": "false",
-                              "nprocs": "1"
+                              "nprocs": "1",
+                              "network_svg": "true"
                               }
 
         config.add_section("user_preferences")
@@ -70,6 +72,7 @@ class user_preferences:
                           "X_grid_lines": False,
                           "Y_grid_lines": False,
                           "normalize_simplot": False,
-                          "nprocs": 1
+                          "nprocs": 1,
+                          "network_svg": True
                           }
         return user_pref_dict

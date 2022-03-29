@@ -1541,6 +1541,50 @@ QPushButton:pressed{
                      </widget>
                     </item>
                     <item>
+                     <widget class="QPushButton" name="Btn_simplot_cancel">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
+                      <property name="minimumSize">
+                       <size>
+                        <width>146</width>
+                        <height>60</height>
+                       </size>
+                      </property>
+                      <property name="font">
+                       <font>
+                        <pointsize>10</pointsize>
+                       </font>
+                      </property>
+                      <property name="styleSheet">
+                       <string notr="true">QPushButton {
+    border: 0px;
+	
+	image: url(:/new/active/active/pause_button_active.svg);
+ }
+
+
+QPushButton:hover{
+	border: 0px;
+	
+	image: url(:/new/hover/hover/pause_button_hover.svg);
+}
+
+QPushButton:pressed{
+	border: 0px;
+	
+	image: url(:/new/pressed/pressed/pause_button_pressed.svg);
+}</string>
+                      </property>
+                      <property name="text">
+                       <string/>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
                      <widget class="QPushButton" name="Btn_model_settings">
                       <property name="sizePolicy">
                        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -1638,6 +1682,12 @@ QPushButton:pressed{
                     </item>
                     <item>
                      <widget class="QPushButton" name="Btn_quality">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
                       <property name="minimumSize">
                        <size>
                         <width>145</width>
@@ -1955,6 +2005,50 @@ QPushButton:pressed{
 	border: 0px;
 	
 	image: url(:/new/pressed/pressed/launch_pressed.svg);
+}</string>
+                      </property>
+                      <property name="text">
+                       <string/>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QPushButton" name="Btn_bootscan_cancel">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
+                      <property name="minimumSize">
+                       <size>
+                        <width>146</width>
+                        <height>60</height>
+                       </size>
+                      </property>
+                      <property name="font">
+                       <font>
+                        <pointsize>10</pointsize>
+                       </font>
+                      </property>
+                      <property name="styleSheet">
+                       <string notr="true">QPushButton {
+    border: 0px;
+	
+	image: url(:/new/active/active/pause_button_active.svg);
+ }
+
+
+QPushButton:hover{
+	border: 0px;
+	
+	image: url(:/new/hover/hover/pause_button_hover.svg);
+}
+
+QPushButton:pressed{
+	border: 0px;
+	
+	image: url(:/new/pressed/pressed/pause_button_pressed.svg);
 }</string>
                       </property>
                       <property name="text">
@@ -2672,6 +2766,50 @@ QPushButton:pressed{
 	border: 0px;
 	
 	image: url(:/new/pressed/pressed/launch_pressed.svg);
+}</string>
+                      </property>
+                      <property name="text">
+                       <string/>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QPushButton" name="Btn_network_cancel">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
+                      <property name="minimumSize">
+                       <size>
+                        <width>146</width>
+                        <height>60</height>
+                       </size>
+                      </property>
+                      <property name="font">
+                       <font>
+                        <pointsize>10</pointsize>
+                       </font>
+                      </property>
+                      <property name="styleSheet">
+                       <string notr="true">QPushButton {
+    border: 0px;
+	
+	image: url(:/new/active/active/pause_button_active.svg);
+ }
+
+
+QPushButton:hover{
+	border: 0px;
+	
+	image: url(:/new/hover/hover/pause_button_hover.svg);
+}
+
+QPushButton:pressed{
+	border: 0px;
+	
+	image: url(:/new/pressed/pressed/pause_button_pressed.svg);
 }</string>
                       </property>
                       <property name="text">
@@ -3527,8 +3665,8 @@ QPushButton:pressed{
  <connections/>
  <buttongroups>
   <buttongroup name="buttonGroup_4"/>
-  <buttongroup name="buttonGroup_2"/>
   <buttongroup name="buttonGroup_3"/>
   <buttongroup name="buttonGroup"/>
+  <buttongroup name="buttonGroup_2"/>
  </buttongroups>
 </ui>

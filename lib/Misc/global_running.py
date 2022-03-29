@@ -1,3 +1,6 @@
+from PyQt5.QtCore import QObject, pyqtSignal
+
+
 class RunningStatus:
     """
     This class is used to manage the status of the app in relation with the analyses QThread() used by the SimPlot
@@ -10,6 +13,9 @@ class RunningStatus:
 
     def terminate(self):
         self.running = False
+
+    def reset_status(self):
+        self.running = True
 
     def get_status(self):
         return self.running
