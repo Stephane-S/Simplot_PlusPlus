@@ -47,7 +47,7 @@ SimPlot++ offers the following features:
 - Run Phi, NSS and χ2 statistical tests to detect recombination
 - Provide distance calculability diagnostics
 
-**Reference:** [Samson, S., Lord, É., & Makarenkov, V. (2022). SimPlot++: a Python application for representing sequence similarity and detecting recombination. Bioinformatics, accepted for publication. preprint arXiv:2112.09755.](https://arxiv.org/abs/2112.09755)
+**Reference:** [Samson, S., Lord, É., & Makarenkov, V. (2022). SimPlot++: a Python application for representing sequence similarity and detecting recombination. Bioinformatics, accepted for publication.](https://arxiv.org/abs/2112.09755)
 
 # Installation
 ## Windows version
