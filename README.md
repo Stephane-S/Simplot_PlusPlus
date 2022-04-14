@@ -34,14 +34,7 @@
 
 # About the project
 
-Simplot++ is an open-source multi-platform application designed by Stéphane Samson, Étienne Lord and Vladimir Makarenkov (Université du Québec à Montréal). It is implemented in Python. SimPlot++ produces publication-ready SimPlot and 
-
-
-
-
-
-
-plots using 43 nucleotide and 20 amino acid distance models. Intergenic and intragenic recombination events can be identified using Phi, χ2, NSS and Proportion tests. 
+Simplot++ is an open-source multi-platform application designed by Stéphane Samson, Étienne Lord and Vladimir Makarenkov (Université du Québec à Montréal). It is implemented in Python. SimPlot++ produces publication-ready SimPlot and plots using 43 nucleotide and 20 amino acid distance models. Intergenic and intragenic recombination events can be identified using Phi, χ2, NSS and Proportion tests. 
 Simplot++ also generates and analyzes interactive sequence similarity networks, while supporting multi-processing and providing distance calculability diagnostics.
 
 SimPlot++ offers the following features:
@@ -54,7 +47,7 @@ SimPlot++ offers the following features:
 - Run Phi, NSS and χ2 statistical tests to detect recombination
 - Provide distance calculability diagnostics
 
-**Reference:** [Samson, S., Lord, É., & Makarenkov, V. (2022). SimPlot++: a Python application for representing sequence similarity and detecting recombination. arXiv preprint arXiv:2112.09755.](https://arxiv.org/abs/2112.09755)
+**Reference:** [Samson, S., Lord, É., & Makarenkov, V. (2022). SimPlot++: a Python application for representing sequence similarity and detecting recombination. Bioinformatics, accepted for publication. preprint arXiv:2112.09755.](https://arxiv.org/abs/2112.09755)
 
 # Installation
 ## Windows version
